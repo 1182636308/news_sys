@@ -1,0 +1,115 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    <title>新闻后台管理系统</title>
+{% endblock %}
+
+{% block sidebar %}
+    {% set tab='news-list' %}
+    {% include 'base/sidebar.html' with context %}
+{% endblock %}
+
+
+{% block content %}
+    {% with  %}
+    {% set name = request.args.get('name','') %}
+
+  <h2 class="sub-header">新闻列表</h2>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>新闻ID</th>
+          <th>标题</th>
+          <th>类型</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for news in news_data.items %}
+
+
+        <tr>
+          <td>{{ news.id }}</td>
+          <td>{{ news.title }}</td>
+          <td>{{ news.typeobj.type }}</td>
+          <td>{{ news.status }}</td>
+          <td>
+              <!-- Single button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   操作 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="{{ url_for('news.news_edit',uid=news.uid) }}">编辑</a></li>
+                    <li><a class="del-news" href="javascript:;"
+                    delete_url="{{ url_for('news.news_delete',uid=news.uid) }}">删除</a></li>
+                  </ul>
+                </div>
+          </td>
+        </tr>
+            {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+        {#      分页处理  #}
+    <nav aria-label="Page navigation" class="pull-right">
+
+      <ul class="pagination">
+        <li class="page_num_count">总记录数：{{ news_data.total }}，总页数：{{ news_data.pages }}</li>
+         {% if news_data.has_prev %}
+        <li>
+          <a href="{{ url_for('news.news_list',page=news_data.prev_num) }}?name={{ name }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li >
+          {% else %}
+         <li class="disabled">
+          <a href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+         </li>
+          {% endif %}
+
+      {% for page_num in news_data.iter_pages() %}
+         <li><a href="{{ url_for('news.news_list',page=page_num) }}?name={{ name }}">{{ page_num }}</a></li>
+      {% endfor %}
+
+        {% if news_data.has_next %}
+        <li>
+          <a href="{{ url_for('news.news_list',page=news_data.next_num) }}?name={{ name }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="disabled">
+          <a href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endwith %}
+{% endblock %}
+
+{% block extrajs %}
+    {#  删除新闻的操作  #}
+    <script>
+    $('.del-news').click(function () {
+        var url = $(this).attr('delete_url');
+        var tr = $(this).parents('tr');
+        if (window.confirm('确认删除吗？')){
+            $.post(url,function (rest) {
+                if (rest==='ok'){
+                    tr.addClass('hidden');
+                    alert('删除成功');
+                }
+                else
+                    alert('删除失败')
+        })
+        }
+    })
+    </script>
+{% endblock %}

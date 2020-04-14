@@ -1,0 +1,51 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    <title></title>
+{% endblock %}
+
+{% block sidebar %}
+    {% set tab='news-add' %}
+    {% include 'base/sidebar.html' with context %}
+{% endblock %}
+
+{% block content %}
+
+    <h2 class="sub-header">发表新闻</h2>
+    <form action="{{ url_for('news.news_add') }}" method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {#   新闻标题   #}
+            {{ form.title.label }}
+            {{ form.title }}
+            <p class="help-block">{{ form.title.description }}</p>
+        </div>
+
+        {# 新闻正文   #}
+        <div class="form-group">
+            {{ form.content.label }}
+            {{ form.content() }}
+            {{ ckeditor.config(name='content') }}
+        </div>
+
+        {# 新闻类型  #}
+        <div class="form-group">
+            <label for="news_type">新闻类型</label>
+            <select class="form-control" id="news_type" name="news_type">
+                {% for news_type in news_type_list %}
+                    <option value="{{ news_type.id }}">{{ news_type.type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            {#   置顶级别   #}
+            {{ form.is_top.label }}
+            <p class="help-block">{{ form.is_top.description }}</p>
+            {{ form.is_top }}
+        </div>
+
+        <div class="form-group col-sm-offset-9 col-md-offset-10">
+        <button type="submit" class="btn btn-success">提交</button>
+        </div>
+    </form>
+{% endblock %}

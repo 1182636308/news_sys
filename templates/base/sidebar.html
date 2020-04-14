@@ -1,0 +1,45 @@
+
+  <ul class="nav nav-sidebar">
+    <li {% if tab=='news-list' %}
+            class="active"
+        {% endif %}
+    ><a href="{{ url_for('news.news_list') }}">新闻管理
+        <span class="sr-only">(current)</span></a>
+    </li>
+
+    <li {% if tab=='news-add' %}
+            class="active"
+        {% endif %}
+    ><a href="{{ url_for('news.news_add') }}">发表新闻</a>
+    </li>
+
+    <li><a href="#">新闻类型</a></li>
+
+  </ul>
+  <ul class="nav nav-sidebar">
+    <li{% if tab=='user-list' %}
+            class="active"
+        {% endif %}
+    ><a href="{{ url_for('accounts.user_list') }}">用户管理</a></li>
+
+    <li{% if tab=='user-add' %}
+            class="active"
+        {% endif %}><a href="{{ url_for('accounts.user_add') }}">新增用户</a></li>
+
+    <li{% if tab=='news-review-list' %}
+            class="active"
+        {% endif %}
+    ><a href="{{ url_for('news.news_review_list') }}">审批新闻</a></li>
+  </ul>
+
+  <ul class="nav nav-sidebar">
+    <li{% if tab=='news_reviewed_list' %}
+            class="active"
+        {% endif %}>
+    <a href="{{ url_for('news.news_reviewed_list') }}">查看已审批的新闻</a></li>
+  </ul>
+
+  <ul class="nav nav-sidebar">
+    <li><a href="">更多功能开发中。。。</a></li>
+  </ul>
+

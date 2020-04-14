@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    <title>新增用户</title>
+{% endblock %}
+
+{% block sidebar %}
+    {% set tab='user-add' %}
+    {% include 'base/sidebar.html' with context %}
+{% endblock %}
+
+
+{% block content %}
+{% if current_user.role=='管理员' %}
+    <h2 class="sub-header">新增用户</h2>
+    <form action="{{ url_for('accounts.user_add') }}" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    <div class="form-group">
+    {#  用户名      #}
+    {{ form.username.label }}
+    {{ form.username }}
+    <div style="color: red">
+    {% for err in form.errors['username'] %}
+        {{ err }}
+    {% endfor %}
+    </div>
+    <p class="help-block">{{ form.username.description }}</p>
+     </div>
+
+    <div class="form-group">
+    {#  密码      #}
+    {{ form.password.label }}
+    {{ form.password }}
+    <p class="help-block">{{ form.password.description }}</p>
+     </div>
+        <div class="form-group">
+    {#  重复密码      #}
+    {{ form.password_repeat.label }}
+    {{ form.password_repeat }}
+    <p class="help-block">{{ form.password_repeat.description }}</p>
+     </div>
+
+    <div class="form-group">
+    {#  邮箱     #}
+    {{ form.email.label }}
+    {{ form.email }}
+    <p class="help-block">{{ form.email.description }}</p>
+     </div>
+    <div class="form-group">
+    {#  角色     #}
+    {{ form.role.label }}
+    {{ form.role }}
+    <p class="help-block">{{ form.role.description }}</p>
+     </div>
+
+    <div class="form-group">
+      <label>
+        <button type="submit" class="btn btn-default">提交</button>
+      </label>
+    </div>
+    </form>
+{% else %}
+    <p>无权限访问</p>
+{% endif %}
+
+{% endblock %}

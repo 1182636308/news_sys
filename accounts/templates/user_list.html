@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %}
+{% block title %}
+    <title>新闻后台管理系统</title>
+{% endblock %}
+
+{% block sidebar %}
+    {% set tab='user-list' %}
+    {% include 'base/sidebar.html' with context %}
+{% endblock %}
+
+
+{% block content %}
+{% if current_user.role=='管理员' %}
+    {% with  %}
+    {% set name = request.args.get('name','') %}
+
+  <h2 class="sub-header">用户列表</h2>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>用户ID</th>
+          <th>名称</th>
+          <th>邮箱</th>
+          <th>角色</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in user_data.items %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+              <!-- Single button -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   操作 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li><a href="#">详情</a></li>
+                      <li><a class="del-prod" href="javascript:;" data-id="{{ url_for('accounts.user_delete',id=user.id) }}">删除</a></li>
+                  </ul>
+                </div>
+          </td>
+        </tr>
+     {% endfor %}
+      </tbody>
+    </table>
+  </div>
+    {#  分页处理  #}
+        <nav aria-label="Page navigation" class="pull-right">
+
+          <ul class="pagination">
+            <li class="page_num_count">总记录数：{{ user_data.total }}，总页数：{{ user_data.pages }}</li>
+             {% if user_data.has_prev %}
+            <li>
+              <a href="{{ url_for('accounts.user_list',page=user_data.prev_num) }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li >
+              {% else %}
+             <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+             </li>
+              {% endif %}
+
+          {% for page_num in user_data.iter_pages() %}
+             <li><a href="{{ url_for('accounts.user_list',page=page_num) }}">{{ page_num }}</a></li>
+          {% endfor %}
+
+            {% if user_data.has_next %}
+            <li>
+              <a href="{{ url_for('accounts.user_list',page=user_data.next_num) }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% else %}
+            <li class="disabled">
+              <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+    {% endwith %}
+
+{% else %}
+    <p>无权限访问</p>
+{% endif %}
+{% endblock %}
+
+{% block extrajs %}
+    {#  删除用户的操作  #}
+    <script>
+    $('.del-prod').click(function () {
+        var url = $(this).attr('data-id');
+        var tr = $(this).parents('tr');
+        if (window.confirm('确认删除吗？')){
+            $.post(url,function (rest) {
+                if (rest==='ok'){
+                    tr.addClass('hidden');
+                    alert('删除成功');
+                }
+                else
+                    alert('删除失败')
+        })
+        }
+    })
+    </script>
+{% endblock %}

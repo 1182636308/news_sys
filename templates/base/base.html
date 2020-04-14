@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+      {% block title %}
+          <title>新闻后台管理系统</title>
+      {% endblock %}
+
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static',filename='bootstrap/css/bootstrap.min.css',_external=True) }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/style.css',_external=True) }}" rel="stylesheet">
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+        {% block extracss %}
+            {#   这里可以添加一些css,js等东西    #}
+        {% endblock %}
+      {# 富文本编辑器的js文件加载 #}
+    <script src="//cdn.ckeditor.com/4.9.2/standard/ckeditor.js"></script>
+  </head>
+  <body>
+      {% block top_nav %}
+        {% include 'base/top_nav.html' %}
+      {% endblock %}
+
+    <div class="container-fluid">
+            {#  顶部消息通知  #}
+
+    {% for cat,msg in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ cat }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      {{ msg }}
+    </div>
+    {% endfor %}
+    
+     {% block container %}
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            {% block sidebar %}
+                {#    左侧菜单      #}
+                {% include 'base/sidebar.html' with context %}
+            {% endblock %}
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            {% block content %}
+            {#   内容区域     #}
+            {% endblock %}
+        </div>
+      </div>
+    {% endblock %}
+    </div>
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="{{ url_for('static',filename='/jquery/jquery.min.js',_external=True) }}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="{{ url_for('static',filename='bootstrap/js/bootstrap.min.js',_external=True) }}"></script>
+  {% block extrajs %}
+    {# 可以添加js #}
+  {% endblock %}
+  
+  </body>
+</html>
